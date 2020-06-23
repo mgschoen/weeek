@@ -1,5 +1,6 @@
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
+import '../../scss/quill.scss';
 import Util from '../util';
 import Constants from '../constants';
 import LocalStorageAdapter from './storage';

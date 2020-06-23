@@ -1,0 +1,12 @@
+/* Customizations of Quill editor's theme */
+.ql-editor {
+    ul {
+        padding: 0;
+    }
+
+    @for $num from 1 through 9 {
+        li.ql-indent-#{$num}:not(.ql-direction-rtl) {
+            padding-left: #{$num * 1.5 + 1.5}em;
+        }
+    }
+}
