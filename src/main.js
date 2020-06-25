@@ -1,3 +1,4 @@
+import { version } from '../package.json';
 import Weeek from './js/weeek';
 import Constants from './js/constants';
 
@@ -7,3 +8,5 @@ window.weeek = new Weeek(root);
 for (let day of Constants.DAYS) {
     window.weeek.addDay(day);
 }
+
+document.getElementById('version').textContent = `v${version}`;
