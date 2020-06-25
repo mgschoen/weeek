@@ -1,6 +1,6 @@
 {
   "name": "weeek",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple web based weekly planner",
   "main": "index.js",
   "scripts": {
