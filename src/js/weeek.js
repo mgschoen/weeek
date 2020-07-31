@@ -1,4 +1,3 @@
-// import Quill from 'quill';
 import Weeekday from './components/weeekday';
 
 function Weeek (parentElement) {
