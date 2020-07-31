@@ -1,25 +1,42 @@
 import Constants from '../constants';
+const { LOCALSTORAGE_KEYS } = Constants;
 
-function Storage () {
-    let localStorageContent = 
-        window.localStorage.getItem(Constants.LOCALSTORAGE_KEY);
-    this.content = JSON.parse(localStorageContent);
-    if (!this.content) {
-        this.content = {};
-        window.localStorage.setItem(
-            Constants.LOCALSTORAGE_KEY,
-            JSON.stringify(this.content)
-        );
+const instance = Symbol('INSTANCE');
+const singletonEnforcer = Symbol('SINGELTONENFORCER');
+
+class Storage {
+    constructor(enforcer) {
+        if (enforcer !== singletonEnforcer) {
+            throw new Error('Instantiation failed: Use BreakingNewsData.instance instead of new.');
+        }
+
+        let localStorageContent = window.localStorage.getItem(LOCALSTORAGE_KEYS.content);
+        this.content = JSON.parse(localStorageContent);
+
+        if (!this.content) {
+            this.content = {};
+            window.localStorage.setItem(
+                LOCALSTORAGE_KEYS.content,
+                JSON.stringify(this.content)
+            );
+        }
     }
 
-    this.getField = key => {
+    static get instance() {
+        if (!this[instance]) {
+            this[instance] = new Storage(singletonEnforcer);
+        }
+        return this[instance];
+    }
+
+    getField(key) {
         return this.content[key];
     }
 
-    this.setField = (key, fieldContent) => {
+    setField(key, value) {
         this.content[key] = fieldContent;
         window.localStorage.setItem(
-            Constants.LOCALSTORAGE_KEY,
+            LOCALSTORAGE_KEYS.content,
             JSON.stringify(this.content)
         );
     }

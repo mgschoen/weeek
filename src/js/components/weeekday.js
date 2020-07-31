@@ -5,7 +5,6 @@ import Util from '../util';
 import Constants from '../constants';
 import LocalStorageAdapter from './storage';
 
-let Storage = new LocalStorageAdapter();
 let editorConfig = {
     modules: { toolbar: false },
     placeholder: Constants.PLACEHOLDER_LABEL,
@@ -19,6 +18,7 @@ function Weeekday (title) {
     this.sanitizedTitle = Util.sanitize(title);
     this.node = null;
     this.editor = null;
+    this.storage = LocalStorageAdapter.instance;
 
     // build UI elements
     let section = document.createElement('section');
@@ -38,11 +38,11 @@ function Weeekday (title) {
 
     // init editor
     this.editor = new Quill(editorRoot, editorConfig);
-    let storedContent = Storage.getField(title) || [{insert:'\n'}];
+    let storedContent = this.storage.getField(title) || [{insert:'\n'}];
     this.editor.setContents(storedContent);
     this.editor.on('text-change', () => {
         let content = this.editor.getContents();
-        Storage.setField(title, content);
+        this.storage.setField(title, content);
     })
 }
 
