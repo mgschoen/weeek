@@ -38,11 +38,11 @@ function Weeekday (title) {
 
     // init editor
     this.editor = new Quill(editorRoot, editorConfig);
-    let storedContent = this.storage.getField(title) || [{insert:'\n'}];
+    let storedContent = this.storage.getContent(title) || [{insert:'\n'}];
     this.editor.setContents(storedContent);
     this.editor.on('text-change', () => {
         let content = this.editor.getContents();
-        this.storage.setField(title, content);
+        this.storage.setContent(title, content);
     })
 }
 

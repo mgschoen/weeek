@@ -10,15 +10,20 @@ class Storage {
             throw new Error('Instantiation failed: Use BreakingNewsData.instance instead of new.');
         }
 
-        let localStorageContent = window.localStorage.getItem(LOCALSTORAGE_KEYS.content);
+        const localStorageContent = window.localStorage.getItem(LOCALSTORAGE_KEYS.content);
         this.content = JSON.parse(localStorageContent);
-
+        
         if (!this.content) {
             this.content = {};
-            window.localStorage.setItem(
-                LOCALSTORAGE_KEYS.content,
-                JSON.stringify(this.content)
-            );
+            window.localStorage.setItem(LOCALSTORAGE_KEYS.content, JSON.stringify(this.content));
+        }
+        
+        const localStorageStash = window.localStorage.getItem(LOCALSTORAGE_KEYS.stash);
+        this.stash = JSON.parse(localStorageStash);
+        
+        if (!this.stash) {
+            this.stash = {};
+            window.localStorage.setItem(LOCALSTORAGE_KEYS.stash, JSON.stringify(this.stash));
         }
     }
 
@@ -29,16 +34,22 @@ class Storage {
         return this[instance];
     }
 
-    getField(key) {
-        return this.content[key];
+    getContent(field) {
+        return this.content[field];
     }
 
-    setField(key, value) {
-        this.content[key] = fieldContent;
-        window.localStorage.setItem(
-            LOCALSTORAGE_KEYS.content,
-            JSON.stringify(this.content)
-        );
+    setContent(field, value) {
+        this.content[field] = value;
+        window.localStorage.setItem(LOCALSTORAGE_KEYS.content, JSON.stringify(this.content));
+    }
+
+    getStash(field) {
+        return this.stash[field];
+    }
+
+    setStash(field, value) {
+        this.stash[field] = value;
+        window.localStorage.setItem(LOCALSTORAGE_KEYS.stash, JSON.stringify(this.stash));
     }
 }
 
