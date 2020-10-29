@@ -1,5 +1,5 @@
 import { version } from '../package.json';
-import Weeek from './js/weeek';
+import Weeek from './js/Weeek';
 import Constants from './js/constants';
 
 let root = document.querySelector('.weeek');

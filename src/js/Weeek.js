@@ -1,4 +1,4 @@
-import Weeekday from './components/weeekday';
+import Weeekday from './components/Weeekday';
 
 function Weeek (parentElement) {
     this.root = parentElement;

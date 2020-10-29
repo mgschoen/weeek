@@ -4,10 +4,10 @@ const { LOCALSTORAGE_KEYS } = Constants;
 const instance = Symbol('INSTANCE');
 const singletonEnforcer = Symbol('SINGELTONENFORCER');
 
-class Storage {
+class LocalStorageAdapter {
     constructor(enforcer) {
         if (enforcer !== singletonEnforcer) {
-            throw new Error('Instantiation failed: Use BreakingNewsData.instance instead of new.');
+            throw new Error('Instantiation failed: Use LocalStorageAdapter.instance instead of new.');
         }
 
         const localStorageContent = window.localStorage.getItem(LOCALSTORAGE_KEYS.content);
@@ -29,7 +29,7 @@ class Storage {
 
     static get instance() {
         if (!this[instance]) {
-            this[instance] = new Storage(singletonEnforcer);
+            this[instance] = new LocalStorageAdapter(singletonEnforcer);
         }
         return this[instance];
     }
@@ -53,4 +53,4 @@ class Storage {
     }
 }
 
-export default Storage;
+export default LocalStorageAdapter;

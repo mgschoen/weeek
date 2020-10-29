@@ -3,7 +3,7 @@ import 'quill/dist/quill.bubble.css';
 import '../../scss/quill.scss';
 import Util from '../util';
 import Constants from '../constants';
-import LocalStorageAdapter from './storage';
+import LocalStorageAdapter from './LocalStorageAdapter';
 
 let editorConfig = {
     modules: { toolbar: false },
