@@ -31,35 +31,41 @@ let template = `
     </div>
 </section>`;
 
-function Weeekday (title) {
+export default class Weeekday {
+    constructor(title) {
+        // instance variables
+        this.title = title;
+        this.sanitizedTitle = Util.sanitize(title);
+        this.node = null;
+        this.editor = null;
+        this.storage = LocalStorageAdapter.instance;
 
-    // instance variables
-    this.title = title;
-    this.sanitizedTitle = Util.sanitize(title);
-    this.node = null;
-    this.editor = null;
-    this.storage = LocalStorageAdapter.instance;
+        this.renderUI();
+        this.initEditor();
+    }
 
-    // render UI
-    let html = template;
-    const placeholders = template.match(/{{\w+}}/g);
-    placeholders.forEach(placeholder => {
-        const key = placeholder.match(/\w+/)[0];
-        html = html.replace(placeholder, this[key]);
-    });
-    const virtualParent = document.createElement('div');
-    virtualParent.insertAdjacentHTML('afterbegin', html);
-    this.node = virtualParent.firstElementChild;
+    renderUI() {
+        let html = template;
+        const placeholders = template.match(/{{\w+}}/g);
+        placeholders.forEach(placeholder => {
+            const key = placeholder.match(/\w+/)[0];
+            html = html.replace(placeholder, this[key]);
+        });
+        const virtualParent = document.createElement('div');
+        virtualParent.insertAdjacentHTML('afterbegin', html);
+        this.node = virtualParent.firstElementChild;
+    }
 
-    // init editor
-    const editorRoot = this.node.querySelector('.weeek-day__editor-root');
-    this.editor = new Quill(editorRoot, editorConfig);
-    let storedContent = this.storage.getContent(title) || [{insert:'\n'}];
-    this.editor.setContents(storedContent);
-    this.editor.on('text-change', () => {
+    initEditor() {
+        const editorRoot = this.node.querySelector('.weeek-day__editor-root');
+        this.editor = new Quill(editorRoot, editorConfig);
+        let storedContent = this.storage.getContent(this.title) || [{insert:'\n'}];
+        this.editor.setContents(storedContent);
+        this.editor.on('text-change', this.onEditorTextChange.bind(this));
+    }
+
+    onEditorTextChange() {
         let content = this.editor.getContents();
-        this.storage.setContent(title, content);
-    });
-}
-
-export default Weeekday;
+        this.storage.setContent(this.title, content);
+    }
+};
