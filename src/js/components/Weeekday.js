@@ -15,17 +15,15 @@ let template = `
 <section class="weeek-day weeek-day--{{sanitizedTitle}}">
     <header>
         <h2>{{title}}</h2>
-        <button>
-            <svg height="30" width="30">
-                <mask id="cross">
-                    <rect x="0" y="0" width="30" height="30" fill="white" />
-                    <line x1="11" y1="11" x2="19" y2="19" stroke="black" stroke-width="3" stroke-linecap="round" />
-                    <line x1="11" y1="19" x2="19" y2="11" stroke="black" stroke-width="3" stroke-linecap="round" />
-                </mask>
-                <circle cx="15" cy="15" r="13" fill="black" mask="url(#cross)"/>
+        <button data-weeek-day-el="button">
+            <svg data-weeek-day-el="icon-delete" height="30" width="30">
+                <circle cx="15" cy="15" r="13" mask="url(#cross)" style="fill:currentColor;"/>
             </svg>
-        </button>
-    </header>
+            <svg data-weeek-day-el="icon-undo" height="30" width="30" style="display:none;">
+                <circle cx="15" cy="15" r="13" stroke="black" stroke-width="2" fill="none"/>
+            </svg>
+            </button>
+            </header>
     <div class="weeek-day__editor">
         <div class="weeek-day__editor-root"></div>
     </div>
@@ -36,9 +34,13 @@ export default class Weeekday {
         // instance variables
         this.title = title;
         this.sanitizedTitle = Util.sanitize(title);
-        this.node = null;
         this.editor = null;
         this.storage = LocalStorageAdapter.instance;
+        this.node = null;
+        this.button = null;
+        this.iconDelete = null;
+        this.iconUndo = null;
+        this._state = 'STATE_INITIAL';
 
         this.renderUI();
         this.initEditor();
@@ -54,6 +56,9 @@ export default class Weeekday {
         const virtualParent = document.createElement('div');
         virtualParent.insertAdjacentHTML('afterbegin', html);
         this.node = virtualParent.firstElementChild;
+        this.button = this.node.querySelector('[data-weeek-day-el="button"]');
+        this.iconDelete = this.node.querySelector('[data-weeek-day-el="icon-delete"]');
+        this.iconUndo = this.node.querySelector('[data-weeek-day-el="icon-undo"]');
     }
 
     initEditor() {
@@ -67,5 +72,39 @@ export default class Weeekday {
     onEditorTextChange() {
         let content = this.editor.getContents();
         this.storage.setContent(this.title, content);
+    }
+
+    get state() {
+        if (!this._state) {
+            this._state = 'STATE_INITIAL';
+        }
+        return this._state;
+    }
+
+    set state(value) {
+        const allowedStates = [ 'STATE_INITIAL', 'STATE_DELETABLE', 'STATE_STASHED' ];
+        if (!allowedStates.includes(value)) {
+            console.warn(`"${value}" is an invalid value for state`);
+            return null;
+        }
+        switch(value) {
+            case 'STATE_DELETABLE':
+                this.button.disabled = false;
+                this.iconDelete.style.display = 'block';
+                this.iconUndo.style.display = 'none';
+                break;
+            case 'STATE_STASHED':
+                this.button.disabled = false;
+                this.iconDelete.style.display = 'none';
+                this.iconUndo.style.display = 'block';
+                break;
+            case 'STATE_INITIAL':
+            default:
+                this.button.disabled = true;
+                this.iconDelete.style.display = 'block';
+                this.iconUndo.style.display = 'none';
+        }
+        this._state = value;
+        return this._state;
     }
 };

@@ -62,10 +62,16 @@ body {
                 border-left: $border;
                 border-right: 0;
                 border-top: 0;
+                cursor: pointer;
                 display: flex;
                 flex-direction: row;
                 padding: 0 5px;
                 width: 42px;
+
+                &:disabled {
+                    color: grey;
+                    cursor: auto;
+                }
 
                 svg {
                     align-self: center;
