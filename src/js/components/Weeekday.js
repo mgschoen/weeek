@@ -5,6 +5,12 @@ import Util from '../util';
 import LocalStorageAdapter from './LocalStorageAdapter';
 import { PLACEHOLDER_LABEL } from '../constants';
 
+const STATE_INITIAL = 'STATE_INITIAL';
+const STATE_DELETABLE = 'STATE_DELETABLE';
+const STATE_STASHED = 'STATE_STASHED';
+
+const DELTA_EMPTY = [{insert:'\n'}];
+
 let editorConfig = {
     modules: { toolbar: false },
     placeholder: PLACEHOLDER_LABEL,
@@ -36,17 +42,23 @@ export default class Weeekday {
         this.sanitizedTitle = Util.sanitize(title);
         this.editor = null;
         this.storage = LocalStorageAdapter.instance;
+        this.stash = this.storage.getStash(this.title) || null;
         this.node = null;
         this.button = null;
         this.iconDelete = null;
         this.iconUndo = null;
-        this._state = 'STATE_INITIAL';
+        this._state = STATE_INITIAL;
+
+        this.boundOnEditorTextChange = () => this.onEditorTextChange();
+        this.boundOnButtonClicked = () => this.onButtonClicked();
 
         this.renderUI();
         this.initEditor();
+        this.determineState();
     }
 
     renderUI() {
+        // render template
         let html = template;
         const placeholders = template.match(/{{\w+}}/g);
         placeholders.forEach(placeholder => {
@@ -55,50 +67,102 @@ export default class Weeekday {
         });
         const virtualParent = document.createElement('div');
         virtualParent.insertAdjacentHTML('afterbegin', html);
+
+        // assign properties
         this.node = virtualParent.firstElementChild;
         this.button = this.node.querySelector('[data-weeek-day-el="button"]');
         this.iconDelete = this.node.querySelector('[data-weeek-day-el="icon-delete"]');
         this.iconUndo = this.node.querySelector('[data-weeek-day-el="icon-undo"]');
+
+        // add event listeners
+        this.button.addEventListener('click', this.boundOnButtonClicked);
     }
 
     initEditor() {
         const editorRoot = this.node.querySelector('.weeek-day__editor-root');
         this.editor = new Quill(editorRoot, editorConfig);
-        let storedContent = this.storage.getContent(this.title) || [{insert:'\n'}];
+        let storedContent = this.storage.getContent(this.title) || DELTA_EMPTY;
         this.editor.setContents(storedContent);
-        this.editor.on('text-change', this.onEditorTextChange.bind(this));
+        this.editor.on('text-change', this.boundOnEditorTextChange);
+    }
+
+    determineState() {
+        const content = this.editor.getContents();
+        const isEmpty = content.ops
+            && Array.isArray(content.ops)
+            && content.ops.length === 1
+            && content.ops[0].insert
+            && content.ops[0].insert === '\n'
+            && !content.ops[0].attributes;
+
+        if (!isEmpty) {
+            if (this.state === STATE_STASHED) {
+                this.forgetStash();
+            }
+            this.state = STATE_DELETABLE;
+        } else if (this.stash) {
+            this.state = STATE_STASHED;
+        } else {
+            this.state = STATE_INITIAL;
+        }
+    }
+
+    stashAndDeleteContent() {
+        this.stash = this.editor.getContents();
+        this.storage.setStash(this.title, this.stash);
+        this.editor.setContents(DELTA_EMPTY);
+    }
+
+    restoreStash() {
+        this.editor.setContents(this.stash);
+        this.forgetStash();
+    }
+
+    forgetStash() {
+        this.stash = null;
+        this.storage.setStash(this.title, null);
     }
 
     onEditorTextChange() {
-        let content = this.editor.getContents();
+        const content = this.editor.getContents();
         this.storage.setContent(this.title, content);
+        this.determineState();
+    }
+
+    onButtonClicked() {
+        const state = this.state;
+        if (state === STATE_DELETABLE) {
+            this.stashAndDeleteContent();
+        } else if (state === STATE_STASHED) {
+            this.restoreStash();
+        } 
     }
 
     get state() {
         if (!this._state) {
-            this._state = 'STATE_INITIAL';
+            this._state = STATE_INITIAL;
         }
         return this._state;
     }
 
     set state(value) {
-        const allowedStates = [ 'STATE_INITIAL', 'STATE_DELETABLE', 'STATE_STASHED' ];
+        const allowedStates = [ STATE_INITIAL, STATE_DELETABLE, STATE_STASHED ];
         if (!allowedStates.includes(value)) {
             console.warn(`"${value}" is an invalid value for state`);
             return null;
         }
         switch(value) {
-            case 'STATE_DELETABLE':
+            case STATE_DELETABLE:
                 this.button.disabled = false;
                 this.iconDelete.style.display = 'block';
                 this.iconUndo.style.display = 'none';
                 break;
-            case 'STATE_STASHED':
+            case STATE_STASHED:
                 this.button.disabled = false;
                 this.iconDelete.style.display = 'none';
                 this.iconUndo.style.display = 'block';
                 break;
-            case 'STATE_INITIAL':
+            case STATE_INITIAL:
             default:
                 this.button.disabled = true;
                 this.iconDelete.style.display = 'block';
