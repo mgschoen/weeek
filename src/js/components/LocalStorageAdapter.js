@@ -1,5 +1,4 @@
-import Constants from '../constants';
-const { LOCALSTORAGE_KEYS } = Constants;
+import { LOCALSTORAGE_KEYS } from '../constants';
 
 const instance = Symbol('INSTANCE');
 const singletonEnforcer = Symbol('SINGELTONENFORCER');

@@ -2,12 +2,12 @@ import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import '../../scss/quill.scss';
 import Util from '../util';
-import Constants from '../constants';
 import LocalStorageAdapter from './LocalStorageAdapter';
+import { PLACEHOLDER_LABEL } from '../constants';
 
 let editorConfig = {
     modules: { toolbar: false },
-    placeholder: Constants.PLACEHOLDER_LABEL,
+    placeholder: PLACEHOLDER_LABEL,
     theme: 'bubble'
 };
 
