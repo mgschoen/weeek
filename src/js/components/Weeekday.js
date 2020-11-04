@@ -21,11 +21,11 @@ let template = `
 <section class="weeek-day weeek-day--{{sanitizedTitle}}">
     <header>
         <h2>{{title}}</h2>
-        <button data-weeek-day-el="button">
-            <svg data-weeek-day-el="icon-delete" height="30" width="30">
+        <button class="weeek-day__button">
+            <svg class="weeek-day__icon-delete" height="30" width="30">
                 <circle cx="15" cy="15" r="10" mask="url(#cross)" style="fill:currentColor;"/>
             </svg>
-            <svg data-weeek-day-el="icon-undo" height="30" width="30" style="display:none;">
+            <svg class="weeek-day__icon-undo" height="30" width="30" style="display:none;">
                 <circle cx="15" cy="15" r="7" stroke="black" stroke-width="2" fill="none" mask="url(#circle-cutout)"/>
                 <polygon points="16,6 16,13 23,7" fill="black"/>
             </svg>
@@ -71,9 +71,9 @@ export default class Weeekday {
 
         // assign properties
         this.node = virtualParent.firstElementChild;
-        this.button = this.node.querySelector('[data-weeek-day-el="button"]');
-        this.iconDelete = this.node.querySelector('[data-weeek-day-el="icon-delete"]');
-        this.iconUndo = this.node.querySelector('[data-weeek-day-el="icon-undo"]');
+        this.button = this.node.querySelector('.weeek-day__button');
+        this.iconDelete = this.node.querySelector('.weeek-day__icon-delete');
+        this.iconUndo = this.node.querySelector('.weeek-day__icon-undo');
 
         // add event listeners
         this.button.addEventListener('click', this.boundOnButtonClicked);
