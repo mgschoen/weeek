@@ -23,10 +23,11 @@ let template = `
         <h2>{{title}}</h2>
         <button data-weeek-day-el="button">
             <svg data-weeek-day-el="icon-delete" height="30" width="30">
-                <circle cx="15" cy="15" r="13" mask="url(#cross)" style="fill:currentColor;"/>
+                <circle cx="15" cy="15" r="10" mask="url(#cross)" style="fill:currentColor;"/>
             </svg>
             <svg data-weeek-day-el="icon-undo" height="30" width="30" style="display:none;">
-                <circle cx="15" cy="15" r="13" stroke="black" stroke-width="2" fill="none"/>
+                <circle cx="15" cy="15" r="7" stroke="black" stroke-width="2" fill="none" mask="url(#circle-cutout)"/>
+                <polygon points="16,6 16,13 23,7" fill="black"/>
             </svg>
             </button>
             </header>
