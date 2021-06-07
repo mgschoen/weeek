@@ -1,7 +1,6 @@
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import '../../scss/quill.scss';
-import Util from '../util';
 import LocalStorageAdapter from './LocalStorageAdapter';
 import { PLACEHOLDER_LABEL } from '../constants';
 
@@ -40,7 +39,10 @@ export default class Weeekday {
     constructor(title) {
         // instance variables
         this.title = title;
-        this.sanitizedTitle = Util.sanitize(title);
+        this.sanitizedTitle = title
+            .trim()
+            .toLowerCase()
+            .replace(/\s/g, '-');
         this.editor = null;
         this.storage = LocalStorageAdapter.instance;
         this.stash = this.storage.getStash(this.title) || null;
