@@ -1,4 +1,4 @@
-import Weeekday from './components/Weeekday';
+import Weeekday from './_Weeekday';
 
 export default class Weeek {
     constructor(parentElement) {

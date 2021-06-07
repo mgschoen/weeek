@@ -1,4 +1,7 @@
-import { LOCALSTORAGE_KEYS } from '../constants';
+const LOCALSTORAGE_KEYS = {
+    content: 'weeek_content',
+    stash: 'weeek_stash'
+};
 
 const instance = Symbol('INSTANCE');
 const singletonEnforcer = Symbol('SINGELTONENFORCER');

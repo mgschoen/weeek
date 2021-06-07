@@ -1,22 +1,20 @@
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
-import '../../scss/quill.scss';
-import LocalStorageAdapter from './LocalStorageAdapter';
-import { PLACEHOLDER_LABEL } from '../constants';
+import '../scss/quill.scss';
+import LocalStorageAdapter from './_LocalStorageAdapter';
 
 const STATE_INITIAL = 'STATE_INITIAL';
 const STATE_DELETABLE = 'STATE_DELETABLE';
 const STATE_STASHED = 'STATE_STASHED';
 
-const DELTA_EMPTY = [{insert:'\n'}];
-
-let editorConfig = {
+const EDITOR_CONFIG = {
     modules: { toolbar: false },
-    placeholder: PLACEHOLDER_LABEL,
+    placeholder: 'You\'re free today!',
     theme: 'bubble'
 };
+const DELTA_EMPTY = [{insert:'\n'}];
 
-let template = `
+const TEMPLATE = `
 <section class="weeek-day weeek-day--{{sanitizedTitle}}">
     <header>
         <h2>{{title}}</h2>
@@ -62,8 +60,8 @@ export default class Weeekday {
 
     renderUI() {
         // render template
-        let html = template;
-        const placeholders = template.match(/{{\w+}}/g);
+        let html = TEMPLATE;
+        const placeholders = TEMPLATE.match(/{{\w+}}/g);
         placeholders.forEach(placeholder => {
             const key = placeholder.match(/\w+/)[0];
             html = html.replace(placeholder, this[key]);
@@ -83,7 +81,7 @@ export default class Weeekday {
 
     initEditor() {
         const editorRoot = this.node.querySelector('.weeek-day__editor-root');
-        this.editor = new Quill(editorRoot, editorConfig);
+        this.editor = new Quill(editorRoot, EDITOR_CONFIG);
         let storedContent = this.storage.getContent(this.title) || DELTA_EMPTY;
         this.editor.setContents(storedContent);
         this.editor.on('text-change', this.boundOnEditorTextChange);
