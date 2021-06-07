@@ -33,6 +33,20 @@ const TEMPLATE = `
     </div>
 </section>`;
 
+const TEMPLATE_SVG_MASKS = `
+<svg width="0" height="0" class="weeek__svg-masks">
+    <mask id="cross">
+        <rect x="0" y="0" width="30" height="30" fill="white" />
+        <line x1="12" y1="12" x2="18" y2="18" stroke="black" stroke-width="3" stroke-linecap="round" />
+        <line x1="12" y1="18" x2="18" y2="12" stroke="black" stroke-width="3" stroke-linecap="round" />
+    </mask>
+    <mask id="circle-cutout">
+        <rect x="0" y="0" width="30" height="30" fill="white" />
+        <polygon points="4,0 15,15 30,0" fill="black" style="transform:rotateX(15deg);"/>
+    </mask>
+</svg>
+`;
+
 export default class Weeekday {
     constructor(title) {
         // instance variables
@@ -53,9 +67,16 @@ export default class Weeekday {
         this.boundOnEditorTextChange = () => this.onEditorTextChange();
         this.boundOnButtonClicked = () => this.onButtonClicked();
 
+        this.renderSvgMasks();
         this.renderUI();
         this.initEditor();
         this.determineState();
+    }
+
+    renderSvgMasks() {
+        if (!document.querySelector('.weeek__svg-masks')) {
+            document.body.insertAdjacentHTML('beforeend', TEMPLATE_SVG_MASKS);
+        }
     }
 
     renderUI() {
