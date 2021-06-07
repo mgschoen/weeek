@@ -12,7 +12,7 @@
         <a href="https://github.com/mgschoen/weeek" title="Weeek on Github">weeek</a>
         <span id="version"></span>
     </div>
-    <svg>
+    <svg width="0" height="0">
         <mask id="cross">
             <rect x="0" y="0" width="30" height="30" fill="white" />
             <line x1="12" y1="12" x2="18" y2="18" stroke="black" stroke-width="3" stroke-linecap="round" />
@@ -22,6 +22,8 @@
             <rect x="0" y="0" width="30" height="30" fill="white" />
             <polygon points="4,0 15,15 30,0" fill="black" style="transform:rotateX(15deg);"/>
         </mask>
+        <circle cx="0" cy="0" r="0" mask="url(#cross)"></circle>
+        <circle cx="0" cy="0" r="0" mask="url(#circle-cutout)"></circle>
     </svg>
     <script src="./js/main.js"></script>
 </body>
