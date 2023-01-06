@@ -17,9 +17,6 @@
   ],
   "author": "Martin Schön",
   "license": "ISC",
-  "dependencies": {
-    "quill": "^1.3.7"
-  },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.2",
     "buffer": "^5.5.0",
